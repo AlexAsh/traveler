@@ -1,0 +1,13 @@
+{
+    "name": "alexash-php/traveler",
+    "description": "Simple routing library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Ash",
+            "email": "streamprop@gmail.com"
+        }
+    ],
+    "require": {}
+}

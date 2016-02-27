@@ -5,3 +5,4 @@ All notable changes to this project will be documented in this file.
 ### Added
 - This change log file
 - Composer package configuration
+- PHPUnit testing

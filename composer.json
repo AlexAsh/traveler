@@ -9,5 +9,8 @@
             "email": "streamprop@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^5.2"
+    }
 }

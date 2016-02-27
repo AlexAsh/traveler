@@ -6,3 +6,4 @@ All notable changes to this project will be documented in this file.
 - This change log file
 - Composer package configuration
 - PHPUnit testing
+- Router facade

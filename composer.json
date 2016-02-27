@@ -9,8 +9,21 @@
             "email": "streamprop@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "zendframework/zend-diactoros": "^1.3"
+    },
     "require-dev": {
         "phpunit/phpunit": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Traveler\\": "src/Traveler/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Integration\\": "tests/Integration/",
+            "Unit\\": "tests/Unit/"
+        }
     }
 }

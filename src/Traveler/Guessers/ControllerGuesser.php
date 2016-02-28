@@ -3,7 +3,7 @@
 namespace Traveler\Guessers;
 
 /**
- * Description of ControllerGuesser
+ * Guesses controller to call for router
  *
  * @author Alex Ash <streamprop@gmail.com>
  */

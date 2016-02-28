@@ -68,16 +68,8 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         $httpMethod = 'PUT';
         $uriPathSegments = ['foo', 'bar'];
 
-        // No $this->expectException() because of phpunit version 4.8
-        try {
-            $this->guesser->guess($uriPathSegments, $httpMethod);
-        } catch (\Exception $e) {
-            $failedMessage = "Failed to assert that ".get_class($e)." is \DomainException";
-            $this->assertTrue($e instanceof \DomainException, $failedMessage);
-            return;
-        }
-
-        $this->fail("No exception throwed");
+        $this->setExpectedException('\DomainException');
+        $this->guesser->guess($uriPathSegments, $httpMethod);
     }
 
     public function setUp()

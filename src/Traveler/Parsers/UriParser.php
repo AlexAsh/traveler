@@ -3,14 +3,28 @@
 namespace Traveler\Parsers;
 
 use Psr\Http\Message\UriInterface;
+use Traveler\Validators\UriValidatorInterface;
 
 /**
- * Description of UriParser
+ * Parses uri for controller guesser
  *
  * @author Alex Ash <streamprop@gmail.com>
  */
 class UriParser implements UriParserInterface
 {
+    /**
+     * @var \Traveler\Validators\UriValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * @param \Traveler\Validators\UriValidatorInterface $validator
+     */
+    public function __construct(UriValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * Get path segments array and query dictionary
      *
@@ -20,6 +34,8 @@ class UriParser implements UriParserInterface
      */
     public function parse(UriInterface $uri)
     {
+        $this->validator->validate($uri);
+
         $path = trim($uri->getPath(), '/');
         $segments = (strlen($path) > 0) ? explode('/', $path) : [];
 

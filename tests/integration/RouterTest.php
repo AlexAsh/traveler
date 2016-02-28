@@ -6,6 +6,7 @@ use Traveler\Router;
 use Zend\Diactoros\Uri;
 use Traveler\Parsers\UriParser;
 use Traveler\Guessers\ControllerGuesser;
+use Traveler\Validators\UriValidator;
 
 /**
  * @author Alex Ash <streamprop@gmail.com>
@@ -36,7 +37,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $controllerNamespace = 'Example\\Namespace';
         $controllerGuesser = new ControllerGuesser($controllerNamespace);
 
-        $uriParser = new UriParser();
+        $validator = new UriValidator();
+        $uriParser = new UriParser($validator);
 
         $this->router = new Router($uriParser, $controllerGuesser);
     }

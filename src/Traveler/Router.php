@@ -3,6 +3,8 @@
 namespace Traveler;
 
 use Psr\Http\Message\UriInterface;
+use Traveler\Parsers\UriParserInterface;
+use Traveler\Guessers\ControllerGuesserInterface;
 
 /**
  * Facade for routing library
@@ -11,11 +13,24 @@ use Psr\Http\Message\UriInterface;
  */
 class Router
 {
-    private $namespace;
+    /**
+     * @var \Traveler\Parsers\UriParserInterface
+     */
+    private $parser;
 
-    public function __construct($controllerNamespace)
+    /**
+     * @var \Traveler\Guessers\ControllerGuesserInterface
+     */
+    private $guesser;
+
+    /**
+     * @param \Traveler\Parsers\UriParserInterface          $parser
+     * @param \Traveler\Guessers\ControllerGuesserInterface $guesser
+     */
+    public function __construct(UriParserInterface $parser, ControllerGuesserInterface $guesser)
     {
-        $this->namespace = $controllerNamespace;
+        $this->parser = $parser;
+        $this->guesser = $guesser;
     }
 
     /**
@@ -26,17 +41,13 @@ class Router
      */
     public function route(UriInterface $uri, $httpMethod)
     {
-        $path = trim($uri->getPath(), '/');
-        $segments = explode('/', $path);
-        parse_str($uri->getQuery(), $params);
-
-        $class  = $this->namespace.'\\'.ucfirst($segments[0]).'Controller';
-        $method = strtolower($httpMethod).ucfirst($segments[1]);
+        $parsed = $this->parser->parse($uri);
+        $guessed = $this->guesser->guess($parsed['segments'], $httpMethod);
 
         return [
-            'class'  => $class,
-            'method' => $method,
-            'params' => $params,
+            'class'  => $guessed['class'],
+            'method' => $guessed['method'],
+            'params' => $parsed['query'],
         ];
     }
 }

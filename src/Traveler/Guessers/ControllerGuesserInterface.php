@@ -14,6 +14,8 @@ interface ControllerGuesserInterface
      *
      * @param array  $uriPathSegments
      * @param string $httpMethod
+     *
+     * @return \Traveler\Invokers\ControllerInvokerInterface
      */
     public function guess(array $uriPathSegments, $httpMethod);
 }

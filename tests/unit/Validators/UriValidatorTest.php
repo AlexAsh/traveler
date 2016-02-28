@@ -29,7 +29,7 @@ class UriValidatorTest extends \PHPUnit_Framework_TestCase
         $validator = new UriValidator();
         $uri = new Uri('http://example.com/fo^o/b%ar/?a=baz&b=qux');
 
-        $this->setExpectedException('\DomainException');
+        $this->setExpectedException('\\DomainException');
         $validator->validate($uri);
     }
 }

@@ -42,12 +42,9 @@ class Router
     public function route(UriInterface $uri, $httpMethod)
     {
         $parsed = $this->parser->parse($uri);
-        $guessed = $this->guesser->guess($parsed['segments'], $httpMethod);
+        $invoker = $this->guesser->guess($parsed['segments'], $httpMethod);
+        $invoker->setParams($parsed['query']);
 
-        return [
-            'class'  => $guessed['class'],
-            'method' => $guessed['method'],
-            'params' => $parsed['query'],
-        ];
+        return $invoker;
     }
 }

@@ -3,6 +3,7 @@
 namespace Unit\Guessers;
 
 use Traveler\Guessers\ControllerGuesser;
+use Traveler\Invokers\ControllerInvoker;
 
 /**
  * @author Alex Ash <streamprop@gmail.com>
@@ -11,7 +12,7 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
 {
     private $guesser;
 
-    public function testGuess_withTwoUriPathSegments_GetClassAndMethodGuessed()
+    public function testGuess_WithTwoUriPathSegments_GetClassAndMethodGuessed()
     {
         $httpMethod = 'GET';
         $uriPathSegments = ['foo', 'bar'];
@@ -22,10 +23,11 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
             'class'  => 'Example\\Namespace\\FooController',
             'method' => 'getBar',
         ];
-        $this->assertEquals($expected, $guessed);
+        $this->assertEquals($expected['class'],  $guessed->getClass());
+        $this->assertEquals($expected['method'], $guessed->getMethod());
     }
 
-    public function testGuess_withOneUriPathSegment_GetClassAndDefaultMethodGuessed()
+    public function testGuess_WithOneUriPathSegment_GetClassAndDefaultMethodGuessed()
     {
         $httpMethod = 'GET';
         $uriPathSegments = ['foo'];
@@ -38,10 +40,11 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
             'class'  => 'Example\\Namespace\\FooController',
             'method' => 'getDefault',
         ];
-        $this->assertEquals($expected, $guessed);
+        $this->assertEquals($expected['class'],  $guessed->getClass());
+        $this->assertEquals($expected['method'], $guessed->getMethod());
     }
 
-    public function testGuess_withNoUriPathSegments_GetDefaultClassAndDefaultMethodGuessed()
+    public function testGuess_WithNoUriPathSegments_GetDefaultClassAndDefaultMethodGuessed()
     {
         $httpMethod = 'GET';
         $uriPathSegments = [];
@@ -57,10 +60,11 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
             'class'  => 'Example\\Namespace\\EmptyController',
             'method' => 'getDefault',
         ];
-        $this->assertEquals($expected, $guessed);
+        $this->assertEquals($expected['class'],  $guessed->getClass());
+        $this->assertEquals($expected['method'], $guessed->getMethod());
     }
 
-    public function testGuess_withUnsupportedHttpMethod_ThrowDomainException()
+    public function testGuess_WithUnsupportedHttpMethod_ThrowDomainException()
     {
         $supportedHttpMethods = ['GET', 'POST'];
         $this->guesser->setSupportedHttpMethods($supportedHttpMethods);
@@ -68,7 +72,7 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         $httpMethod = 'PUT';
         $uriPathSegments = ['foo', 'bar'];
 
-        $this->setExpectedException('\DomainException');
+        $this->setExpectedException('\\DomainException');
         $this->guesser->guess($uriPathSegments, $httpMethod);
     }
 
@@ -77,6 +81,8 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $controllerNamespace = 'Example\\Namespace';
-        $this->guesser = new ControllerGuesser($controllerNamespace);
+        $controllerInvoker = new ControllerInvoker();
+
+        $this->guesser = new ControllerGuesser($controllerNamespace, $controllerInvoker);
     }
 }

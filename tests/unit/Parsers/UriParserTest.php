@@ -13,7 +13,7 @@ class UriParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParse_WithValidUri_GetParsedPathAndQuery()
     {
-        $uriStub = \Mockery::mock('\Psr\Http\Message\UriInterface')
+        $uriStub = \Mockery::mock('\\Psr\\Http\\Message\\UriInterface')
             ->shouldReceive(['getPath' => '/foo/bar/', 'getQuery' => 'a=baz&b=qux'])
             ->mock();
 
@@ -28,7 +28,7 @@ class UriParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParse_WithEmptyUriPath_GetEmptySegmentsArray()
     {
-        $uriStub = \Mockery::mock('\Psr\Http\Message\UriInterface')
+        $uriStub = \Mockery::mock('\\Psr\\Http\\Message\\UriInterface')
             ->shouldReceive(['getPath' => '/', 'getQuery' => 'a=baz&b=qux'])
             ->mock();
 
@@ -43,7 +43,7 @@ class UriParserTest extends \PHPUnit_Framework_TestCase
 
     public function testParse_WithEmptyQuery_GetEmptyQueryArray()
     {
-        $uriStub = \Mockery::mock('\Psr\Http\Message\UriInterface')
+        $uriStub = \Mockery::mock('\\Psr\\Http\\Message\\UriInterface')
             ->shouldReceive(['getPath' => '/foo/bar/', 'getQuery' => ''])
             ->mock();
 
@@ -60,7 +60,7 @@ class UriParserTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $validatorMock = \Mockery::mock('\Traveler\Validators\UriValidatorInterface')
+        $validatorMock = \Mockery::mock('\\Traveler\\Validators\\UriValidatorInterface')
             ->shouldReceive('validate')
             ->once()
             ->mock();

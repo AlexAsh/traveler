@@ -2,6 +2,8 @@
 
 namespace Traveler\Guessers;
 
+use \Traveler\Invokers\ControllerInvokerInterface;
+
 /**
  * Guesses controller to call for router
  *
@@ -33,11 +35,18 @@ class ControllerGuesser implements ControllerGuesserInterface
     private $namespace;
 
     /**
-     * @param string $controllerNamespace
+     * @var \Traveler\Invokers\ControllerInvokerInterface
      */
-    public function __construct($controllerNamespace)
+    private $invoker;
+
+    /**
+     * @param string $controllerNamespace
+     * @param \Traveler\Invokers\ControllerInvokerInterface $invoker
+     */
+    public function __construct($controllerNamespace, ControllerInvokerInterface $invoker)
     {
         $this->namespace = $controllerNamespace;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -46,7 +55,7 @@ class ControllerGuesser implements ControllerGuesserInterface
      * @param array  $segments
      * @param string $httpMethod
      *
-     * @return array ['class' => 'Namespace\Controller', 'method' => 'httpmethodAction']
+     * @return \Traveler\Invokers\ControllerInvokerInterface
      *
      * @throws \DomainException
      */
@@ -57,10 +66,14 @@ class ControllerGuesser implements ControllerGuesserInterface
         $classSegment  = (count($segments) > 0) ? $segments[0] : $this->defaultClassSegment;
         $methodSegment = (count($segments) > 1) ? $segments[1] : $this->defaultMethodSegment;
 
-        $class = $this->namespace.'\\'.ucfirst($classSegment).'Controller';
+        $this->invoker->setClass($this->namespace.'\\'.ucfirst($classSegment).'Controller');
+        $this->invoker->setMethod(strtolower($httpMethod).ucfirst($methodSegment));
+
+        return $this->invoker;
+/*        $class = $this->namespace.'\\'.ucfirst($classSegment).'Controller';
         $method = strtolower($httpMethod).ucfirst($methodSegment);
 
-        return ['class' => $class, 'method' => $method];
+        return ['class' => $class, 'method' => $method];*/
     }
 
     /**

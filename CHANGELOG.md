@@ -7,3 +7,4 @@ All notable changes to this project will be documented in this file.
 - Composer package configuration
 - PHPUnit testing
 - Router facade
+- Controller invoking functionality

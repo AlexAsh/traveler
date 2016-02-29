@@ -2,6 +2,8 @@
 
 namespace Traveler\Invokers;
 
+use Traveler\Invokers\Exceptions\Exception404;
+
 /**
  * Invokes controller by class, method, and params given
  *
@@ -27,7 +29,7 @@ class ControllerInvoker implements ControllerInvokerInterface
     /**
      * @var object
      */
-    private $controllerObject = NULL;
+    private $controllerObject = null;
 
     /**
      * Invokes controller by class, method, and params given; throws exception if no such controller
@@ -53,11 +55,11 @@ class ControllerInvoker implements ControllerInvokerInterface
     private function checkController()
     {
         if (!class_exists($this->class)) {
-            throw new Exceptions\Exception404("No such controller class {$this->class}");
+            throw new Exception404("No such controller class {$this->class}");
         }
 
         if (!method_exists($this->class, $this->method)) {
-            throw new Exceptions\Exception404("No such action {$this->method} in {$this->class}");
+            throw new Exception404("No such action {$this->method} in {$this->class}");
         }
     }
 

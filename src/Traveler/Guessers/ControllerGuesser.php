@@ -19,12 +19,12 @@ class ControllerGuesser implements ControllerGuesserInterface
     /**
      * @var string
      */
-    private $defaultClassSegment  = 'default';
+    private $defaultClassSegment = 'default';
 
     /**
      * @var array
      */
-    private $httpMethods  = [
+    private $httpMethods = [
         'GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE',
         'LINK', 'UNLINK', 'OPTIONS',
     ];
@@ -40,7 +40,7 @@ class ControllerGuesser implements ControllerGuesserInterface
     private $invoker;
 
     /**
-     * @param string $controllerNamespace
+     * @param string                                        $controllerNamespace
      * @param \Traveler\Invokers\ControllerInvokerInterface $invoker
      *
      * @codeCoverageIgnore
@@ -48,7 +48,7 @@ class ControllerGuesser implements ControllerGuesserInterface
     public function __construct($controllerNamespace, ControllerInvokerInterface $invoker)
     {
         $this->namespace = $controllerNamespace;
-        $this->invoker = $invoker;
+        $this->invoker   = $invoker;
     }
 
     /**

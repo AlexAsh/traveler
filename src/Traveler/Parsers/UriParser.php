@@ -38,7 +38,7 @@ class UriParser implements UriParserInterface
     {
         $this->validator->validate($uri);
 
-        $path = trim($uri->getPath(), '/');
+        $path     = trim($uri->getPath(), '/');
         $segments = (strlen($path) > 0) ? explode('/', $path) : [];
 
         parse_str($uri->getQuery(), $query);

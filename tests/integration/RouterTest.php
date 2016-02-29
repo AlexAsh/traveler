@@ -2,12 +2,7 @@
 
 namespace Integration;
 
-use Traveler\Router;
 use Zend\Diactoros\Uri;
-use Traveler\Parsers\UriParser;
-use Traveler\Guessers\ControllerGuesser;
-use Traveler\Validators\UriValidator;
-use Traveler\Invokers\ControllerInvoker;
 
 /**
  * @author Alex Ash <streamprop@gmail.com>
@@ -39,14 +34,11 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
+        require_once __DIR__.'/../../bootstrap/bootstrap.php';
+
         $controllerNamespace = 'Integration';
-        $controllerInvoker = new ControllerInvoker();
-        $controllerGuesser = new ControllerGuesser($controllerNamespace, $controllerInvoker);
-
-        $validator = new UriValidator();
-        $uriParser = new UriParser($validator);
-
-        $this->router = new Router($uriParser, $controllerGuesser);
+        $this->router = getTravelerDiContainer($controllerNamespace)
+                            ->get('Traveler\\Router');
     }
 }
 

@@ -42,6 +42,8 @@ class ControllerGuesser implements ControllerGuesserInterface
     /**
      * @param string $controllerNamespace
      * @param \Traveler\Invokers\ControllerInvokerInterface $invoker
+     *
+     * @codeCoverageIgnore
      */
     public function __construct($controllerNamespace, ControllerInvokerInterface $invoker)
     {
@@ -70,10 +72,6 @@ class ControllerGuesser implements ControllerGuesserInterface
         $this->invoker->setMethod(strtolower($httpMethod).ucfirst($methodSegment));
 
         return $this->invoker;
-/*        $class = $this->namespace.'\\'.ucfirst($classSegment).'Controller';
-        $method = strtolower($httpMethod).ucfirst($methodSegment);
-
-        return ['class' => $class, 'method' => $method];*/
     }
 
     /**
@@ -95,6 +93,8 @@ class ControllerGuesser implements ControllerGuesserInterface
 
     /**
      * @param string $defaultMethodSegment
+     *
+     * @codeCoverageIgnore
      */
     public function setDefaultMethodSegment($defaultMethodSegment)
     {
@@ -103,6 +103,8 @@ class ControllerGuesser implements ControllerGuesserInterface
 
     /**
      * @param string $defaultClassSegment
+     *
+     * @codeCoverageIgnore
      */
     public function setDefaultClassSegment($defaultClassSegment)
     {
@@ -111,6 +113,8 @@ class ControllerGuesser implements ControllerGuesserInterface
 
     /**
      * @param array $httpMethods
+     *
+     * @codeCoverageIgnore
      */
     public function setSupportedHttpMethods(array $httpMethods)
     {

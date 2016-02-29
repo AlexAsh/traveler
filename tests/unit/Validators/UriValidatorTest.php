@@ -24,6 +24,20 @@ class UriValidatorTest extends \PHPUnit_Framework_TestCase
         $this->addToAssertionCount(1);
     }
 
+    public function testValidate_WithEmptyUriPath_NoExceptionThrown()
+    {
+        $validator = new UriValidator();
+        $uri = new Uri('http://example.com?a=baz&b=qux');
+
+        try {
+            $validator->validate($uri);
+        } catch (\Exception $e) {
+            $this->fail("Validator throws exception for valid uri: ".$e->getTraceAsString());
+        }
+
+        $this->addToAssertionCount(1);
+    }
+
     public function testValidate_WithNonAlphanumericInUriPathSegments_ThrowsDomainException()
     {
         $validator = new UriValidator();

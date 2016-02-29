@@ -63,6 +63,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @param string $class
+     *
+     * @codeCoverageIgnore
      */
     public function setClass($class)
     {
@@ -71,6 +73,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getClass()
     {
@@ -79,6 +83,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @param string $method
+     *
+     * @codeCoverageIgnore
      */
     public function setMethod($method)
     {
@@ -87,6 +93,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @return string
+     *
+     * @codeCoverageIgnore
      */
     public function getMethod()
     {
@@ -95,6 +103,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @param array $params
+     *
+     * @codeCoverageIgnore
      */
     public function setParams(array $params)
     {
@@ -103,6 +113,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @return array
+     *
+     * @codeCoverageIgnore
      */
     public function getParams()
     {
@@ -111,6 +123,8 @@ class ControllerInvoker implements ControllerInvokerInterface
 
     /**
      * @return object returns controller object, created in __invoke()
+     *
+     * @codeCoverageIgnore
      */
     public function getControllerObject()
     {

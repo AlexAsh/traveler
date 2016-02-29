@@ -9,6 +9,8 @@ use Traveler\Guessers\ControllerGuesserInterface;
 /**
  * Facade for routing library
  *
+ * @codeCoverageIgnore
+ *
  * @author Alex Ash <streamprop@gmail.com>
  */
 class Router

@@ -19,6 +19,8 @@ class UriParser implements UriParserInterface
 
     /**
      * @param \Traveler\Validators\UriValidatorInterface $validator
+     *
+     * @codeCoverageIgnore
      */
     public function __construct(UriValidatorInterface $validator)
     {

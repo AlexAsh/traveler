@@ -8,4 +8,5 @@ namespace Traveler\Invokers\Exceptions;
  * @author Alex Ash <streamprop@gmail.com>
  */
 class Exception404 extends \RuntimeException
-{}
+{
+}

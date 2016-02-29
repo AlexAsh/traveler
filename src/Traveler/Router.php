@@ -31,7 +31,7 @@ class Router
      */
     public function __construct(UriParserInterface $parser, ControllerGuesserInterface $guesser)
     {
-        $this->parser = $parser;
+        $this->parser  = $parser;
         $this->guesser = $guesser;
     }
 
@@ -39,11 +39,11 @@ class Router
      * Map uri and http method to callable controller info
      *
      * @param \Psr\Http\Message\UriInterface $uri
-     * @param string $httpMethod
+     * @param string                         $httpMethod
      */
     public function route(UriInterface $uri, $httpMethod)
     {
-        $parsed = $this->parser->parse($uri);
+        $parsed  = $this->parser->parse($uri);
         $invoker = $this->guesser->guess($parsed['segments'], $httpMethod);
         $invoker->setParams($parsed['query']);
 

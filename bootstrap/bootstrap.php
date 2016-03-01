@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+namespace Traveler\Bootstrap;
 
-function getTravelerDiContainer($controllerNamespace)
+function bootstrap($controllerNamespace)
 {
     $builder = new \DI\ContainerBuilder();
 

@@ -1,0 +1,22 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - php
+  fixme:
+    enabled: true
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "PSR2"
+  phpmd:
+    enabled: true
+ratings:
+  paths:
+    - "src/**/*.php"
+exclude_paths:
+  - "bootstrap/*"
+  - "tests/*"
+  - "vendor/*"

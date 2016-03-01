@@ -4,4 +4,6 @@
 /.gitignore       export-ignore
 /phpunit.xml.dist export-ignore
 /phpcs.xml.dist   export-ignore
+/build.xml.dist   export-ignore
 /.sensiolabs.yml  export-ignore
+/.codeclimate.yml export-ignore

@@ -12,9 +12,10 @@ function bootstrap($controllerNamespace)
         'Traveler\\Validators\\UriValidatorInterface'                => \DI\object('Traveler\\Validators\\UriValidator'),
         'Traveler\\Parsers\\UriParserInterface'                      => \DI\object('Traveler\\Parsers\\UriParser'),
 
-        'Traveler\\Invokers\\ControllerInvokerInterface'             => \DI\object('Traveler\\Invokers\\ControllerInvoker'),
         'Traveler\\Guessers\\Namespaces\\NamespacesGuesserInterface' => \DI\object('Traveler\\Guessers\\Namespaces\\NamespacesGuesser')
                                                                             ->constructorParameter('rootNamespace', $controllerNamespace),
+        'Traveler\\Guessers\\Classes\\ClassesGuesserInterface'       => \DI\object('Traveler\\Guessers\\Classes\\ClassesGuesser'),
+        'Traveler\\Guessers\\Methods\\MethodsGuesserInterface'       => \DI\object('Traveler\\Guessers\\Methods\\MethodsGuesser'),
         'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser'),
 
         'Traveler\\Router' => \DI\object('Traveler\\Router'),

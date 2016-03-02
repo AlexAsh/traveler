@@ -9,14 +9,13 @@ use Zend\Diactoros\Uri;
  */
 class RouterTest extends \PHPUnit_Framework_TestCase
 {
-    private $router;
-
     public function testRoute_WithValidRequest_MapToAppropriateController()
     {
+        $router = $this->getRouter('Integration');
         $uri = new Uri('http://example.com/example/action/?a=foo&b=bar');
         $httpMethod = 'GET';
 
-        $controllerInvoker = $this->router->route($uri, $httpMethod);
+        $controllerInvoker = $router->route($uri, $httpMethod);
 
         $expected = [
             'class'  => 'Integration\\ExampleController',
@@ -30,13 +29,29 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['result'], $controllerInvoker());
     }
 
-    public function setUp()
+    public function testRoute_WithThreeUriPathSegments_MapToAppropriateController()
     {
-        parent::setUp();
+        $router = $this->getRouter('');
+        $uri = new Uri('http://example.com/integration/example/action/?a=foo&b=bar');
+        $httpMethod = 'GET';
 
-        $controllerNamespace = 'Integration';
-        $this->router = \Traveler\Bootstrap\bootstrap($controllerNamespace)
-                            ->get('Traveler\\Router');
+        $controllerInvoker = $router->route($uri, $httpMethod);
+
+        $expected = [
+            'class'  => 'Integration\\ExampleController',
+            'method' => 'getAction',
+            'params' => ['a' => 'foo', 'b' => 'bar'],
+            'result' => 'Integration\\ExampleController::getAction(foo, bar)',
+        ];
+        $this->assertEquals($expected['class'],  $controllerInvoker->getClass());
+        $this->assertEquals($expected['method'], $controllerInvoker->getMethod());
+        $this->assertEquals($expected['params'], $controllerInvoker->getParams());
+        $this->assertEquals($expected['result'], $controllerInvoker());
+    }
+
+    protected function getRouter($rootNamespace)
+    {
+        return \Traveler\Bootstrap\bootstrap($rootNamespace)->get('Traveler\\Router');
     }
 }
 

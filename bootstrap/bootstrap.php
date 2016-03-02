@@ -9,11 +9,13 @@ function bootstrap($controllerNamespace)
     $builder->useAnnotations(false);
 
     $builder->addDefinitions([
-        'Traveler\\Validators\\UriValidatorInterface'    => \DI\object('Traveler\\Validators\\UriValidator'),
-        'Traveler\\Parsers\\UriParserInterface'          => \DI\object('Traveler\\Parsers\\UriParser'),
-        'Traveler\\Invokers\\ControllerInvokerInterface' => \DI\object('Traveler\\Invokers\\ControllerInvoker'),
-        'Traveler\\Guessers\\ControllerGuesserInterface' => \DI\object('Traveler\\Guessers\\ControllerGuesser')
-                                                                ->constructorParameter('controllerNamespace', $controllerNamespace),
+        'Traveler\\Validators\\UriValidatorInterface'                => \DI\object('Traveler\\Validators\\UriValidator'),
+        'Traveler\\Parsers\\UriParserInterface'                      => \DI\object('Traveler\\Parsers\\UriParser'),
+
+        'Traveler\\Invokers\\ControllerInvokerInterface'             => \DI\object('Traveler\\Invokers\\ControllerInvoker'),
+        'Traveler\\Guessers\\Namespaces\\NamespacesGuesserInterface' => \DI\object('Traveler\\Guessers\\Namespaces\\NamespacesGuesser')
+                                                                            ->constructorParameter('rootNamespace', $controllerNamespace),
+        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser'),
 
         'Traveler\\Router' => \DI\object('Traveler\\Router'),
     ]);

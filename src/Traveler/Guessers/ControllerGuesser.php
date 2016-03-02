@@ -2,7 +2,8 @@
 
 namespace Traveler\Guessers;
 
-use \Traveler\Invokers\ControllerInvokerInterface;
+use Traveler\Invokers\ControllerInvokerInterface;
+use Traveler\Guessers\Namespaces\NamespacesGuesserInterface;
 
 /**
  * Guesses controller to call for router
@@ -30,9 +31,9 @@ class ControllerGuesser implements ControllerGuesserInterface
     ];
 
     /**
-     * @var string
+     * @var \Traveler\Guessers\Namespaces\NamespacesGuesserInterface
      */
-    private $namespace;
+    private $namespaceGuesser;
 
     /**
      * @var \Traveler\Invokers\ControllerInvokerInterface
@@ -40,15 +41,15 @@ class ControllerGuesser implements ControllerGuesserInterface
     private $invoker;
 
     /**
-     * @param string                                        $controllerNamespace
-     * @param \Traveler\Invokers\ControllerInvokerInterface $invoker
+     * @param \Traveler\Guessers\Namespaces\NamespacesGuesserInterface $namespaceGuesser
+     * @param \Traveler\Invokers\ControllerInvokerInterface            $invoker
      *
      * @codeCoverageIgnore
      */
-    public function __construct($controllerNamespace, ControllerInvokerInterface $invoker)
+    public function __construct(NamespacesGuesserInterface $namespaceGuesser, ControllerInvokerInterface $invoker)
     {
-        $this->namespace = $controllerNamespace;
-        $this->invoker   = $invoker;
+        $this->namespaceGuesser = $namespaceGuesser;
+        $this->invoker          = $invoker;
     }
 
     /**
@@ -65,10 +66,12 @@ class ControllerGuesser implements ControllerGuesserInterface
     {
         $this->validateHttpMethod($httpMethod);
 
-        $classSegment  = (count($segments) > 0) ? $segments[0] : $this->defaultClassSegment;
-        $methodSegment = (count($segments) > 1) ? $segments[1] : $this->defaultMethodSegment;
+        $lastSegments  = array_slice($segments, -2);
+        $classSegment  = (count($lastSegments) > 0) ? $lastSegments[0] : $this->defaultClassSegment;
+        $methodSegment = (count($lastSegments) > 1) ? $lastSegments[1] : $this->defaultMethodSegment;
+        $namespace     = $this->namespaceGuesser->guess($segments);
 
-        $this->invoker->setClass($this->namespace.'\\'.ucfirst($classSegment).'Controller');
+        $this->invoker->setClass($namespace.'\\'.ucfirst($classSegment).'Controller');
         $this->invoker->setMethod(strtolower($httpMethod).ucfirst($methodSegment));
 
         return $this->invoker;

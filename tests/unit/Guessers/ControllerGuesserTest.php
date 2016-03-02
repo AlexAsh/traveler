@@ -10,7 +10,30 @@ use Traveler\Invokers\ControllerInvoker;
  */
 class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Traveler\Guessers\ControllerGuesser
+     */
     private $guesser;
+
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    public function testGuess_WithThreeUriPathSegments_GetClassAndMethodFromLastTwoSegments()
+    {
+        $httpMethod = 'GET';
+        $uriPathSegments = ['foo', 'bar', 'baz'];
+
+        $guessed = $this->guesser->guess($uriPathSegments, $httpMethod);
+
+        $expected = [
+            'class'  => $this->namespace.'\\BarController',
+            'method' => 'getBaz',
+        ];
+        $this->assertEquals($expected['class'],  $guessed->getClass());
+        $this->assertEquals($expected['method'], $guessed->getMethod());
+    }
 
     public function testGuess_WithTwoUriPathSegments_GetClassAndMethodGuessed()
     {
@@ -20,7 +43,7 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         $guessed = $this->guesser->guess($uriPathSegments, $httpMethod);
 
         $expected = [
-            'class'  => 'Example\\Namespace\\FooController',
+            'class'  => $this->namespace.'\\FooController',
             'method' => 'getBar',
         ];
         $this->assertEquals($expected['class'],  $guessed->getClass());
@@ -37,7 +60,7 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         $guessed = $this->guesser->guess($uriPathSegments, $httpMethod);
 
         $expected = [
-            'class'  => 'Example\\Namespace\\FooController',
+            'class'  => $this->namespace.'\\FooController',
             'method' => 'getDefault',
         ];
         $this->assertEquals($expected['class'],  $guessed->getClass());
@@ -57,7 +80,7 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
         $guessed = $this->guesser->guess($uriPathSegments, $httpMethod);
 
         $expected = [
-            'class'  => 'Example\\Namespace\\EmptyController',
+            'class'  => $this->namespace.'\\EmptyController',
             'method' => 'getDefault',
         ];
         $this->assertEquals($expected['class'],  $guessed->getClass());
@@ -80,9 +103,18 @@ class ControllerGuesserTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $controllerNamespace = 'Example\\Namespace';
+        $this->namespace = 'Example\\Space';
+        $namespaceGuesser = \Mockery::mock('\\Traveler\\Guessers\\Namespaces\\NamespacesGuesser')
+                                ->shouldReceive(['guess' => $this->namespace])->mock();
         $controllerInvoker = new ControllerInvoker();
 
-        $this->guesser = new ControllerGuesser($controllerNamespace, $controllerInvoker);
+        $this->guesser = new ControllerGuesser($namespaceGuesser, $controllerInvoker);
+    }
+
+    public function tearDown()
+    {
+        \Mockery::close();
+
+        parent::tearDown();
     }
 }

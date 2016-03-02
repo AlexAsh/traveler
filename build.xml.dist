@@ -17,8 +17,8 @@
     </target>
 
     <target name="build">
-        <echo message="Install dependencies" />
-        <exec command="composer install" passthru="true" />
+        <echo message="Install/update dependencies" />
+        <exec command="composer update" passthru="true" />
     </target>
 
     <target name="coding-conventions">

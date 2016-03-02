@@ -22,7 +22,10 @@
     "autoload": {
         "psr-4": {
             "Traveler\\": "src/Traveler/"
-        }
+        },
+        "files": [
+            "bootstrap/bootstrap.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

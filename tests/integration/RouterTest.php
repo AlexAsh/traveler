@@ -34,10 +34,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        require_once __DIR__.'/../../bootstrap/bootstrap.php';
-
         $controllerNamespace = 'Integration';
-        $this->router = getTravelerDiContainer($controllerNamespace)
+        $this->router = \Traveler\Bootstrap\bootstrap($controllerNamespace)
                             ->get('Traveler\\Router');
     }
 }

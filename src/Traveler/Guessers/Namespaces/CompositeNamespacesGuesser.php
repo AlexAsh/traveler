@@ -2,6 +2,8 @@
 
 namespace Traveler\Guessers\Namespaces;
 
+use Traveler\Guessers\CanCamelizeTrait;
+
 /**
  * Guesses full namespace by root namespace and uri path segments
  *
@@ -9,6 +11,8 @@ namespace Traveler\Guessers\Namespaces;
  */
 class CompositeNamespacesGuesser implements NamespacesGuesserInterface
 {
+    use CanCamelizeTrait;
+
     /**
      * @var string
      */
@@ -44,21 +48,9 @@ class CompositeNamespacesGuesser implements NamespacesGuesserInterface
 
         $root              = (strlen($this->root) > 0) ? $this->root.'\\' : '';
         $namespaceSegments = array_slice($uriPathSegments, 0, -2);
-        $namespaceChunks   = array_map([$this, 'camelizeSegment'], $namespaceSegments);
+        $namespaceChunks   = array_map([$this, 'camelize'], $namespaceSegments);
         $namespace         = $root.implode('\\', $namespaceChunks);
 
         return $namespace;
-    }
-
-    /**
-     * Move from delimited-uri-path-segment to DelimitedUriPathSegment
-     *
-     * @param string $segment
-     *
-     * @return string
-     */
-    private function camelizeSegment($segment)
-    {
-        return implode('', array_map('ucfirst', explode($this->delimiter, $segment)));
     }
 }

@@ -7,34 +7,8 @@ namespace Traveler\Guessers\Methods;
  *
  * @author Alex Ash <streamprop@gmail.com>
  */
-class MethodsGuesser implements MethodsGuesserInterface
+class MethodsGuesser extends BaseMethodsGuesser
 {
-    /**
-     * @var string
-     */
-    private $defaultSegment;
-
-    /**
-     * @var array
-     */
-    private $httpMethods = [
-        'GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE',
-        'LINK', 'UNLINK', 'OPTIONS',
-    ];
-
-    /**
-     * @param string $defaultSegment
-     * @param array  $httpMethods    Supported http methods.
-     */
-    public function __construct($defaultSegment = 'default', array $httpMethods = [])
-    {
-        $this->defaultSegment = $defaultSegment;
-
-        if (count($httpMethods) > 0) {
-            $this->httpMethods = $httpMethods;
-        }
-    }
-
     /**
      * Guesses two-word controller method, e.g. getExample, not getLongExample
      *
@@ -42,6 +16,8 @@ class MethodsGuesser implements MethodsGuesserInterface
      * @param string $httpMethod
      *
      * @return string
+     *
+     * @throws \DomainException
      */
     public function guess(array $uriPathSegments, $httpMethod)
     {
@@ -51,22 +27,5 @@ class MethodsGuesser implements MethodsGuesserInterface
         $method  = strtolower($httpMethod).ucfirst($segment);
 
         return $method;
-    }
-
-    /**
-     * Ensure that http method is supported
-     *
-     * @param string $httpMethod
-     *
-     * @throws \DomainException
-     */
-    private function validateHttpMethod($httpMethod)
-    {
-        if (!in_array($httpMethod, $this->httpMethods, true)) {
-            throw new \DomainException(
-                "Unsupported http method $httpMethod, supported methods: ".
-                implode(', ', $this->httpMethods)
-            );
-        }
     }
 }

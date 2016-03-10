@@ -31,13 +31,19 @@ class MethodsGuesserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('getIndex', $guessed);
     }
 
-    public function testGuess_WithUnsupportedHttpMethod_ThrowDomainException()
+    public function testGuess_WithUripathSegmentsAndHttpMethod_EnsureValidateHttpMethodCalledWithHttpMethod()
     {
         $uriPathSegments = ['foo', 'bar'];
-        $httpMethod = 'PUT';
-        $guesser = new MethodsGuesser('index', ['GET', 'POST']);
+        $httpMethod = 'GET';
+        $guesser = \Mockery::mock('\\Traveler\\Guessers\\Methods\\MethodsGuesser[validateHttpMethod]')
+            ->shouldReceive('validateHttpMethod')
+            ->with($httpMethod)
+            ->once()
+            ->mock();
 
-        $this->setExpectedException('\\DomainException');
         $guesser->guess($uriPathSegments, $httpMethod);
+
+        \Mockery::close();
+        $this->addToAssertionCount(1);
     }
 }

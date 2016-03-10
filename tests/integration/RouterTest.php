@@ -51,8 +51,40 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['result'], $controllerInvoker());
     }
 
+    public function testRoute_WithCompositeUriPathSegments_MapToAppropriateController()
+    {
+        $rootNamespace = 'Integration\\Assets\\Controllers';
+        $router = $this->getCompositeRouter($rootNamespace);
+        $uri = new Uri('http://example.com/foo-bar/earth-moon/run-fly/?a=foo&b=bar');
+        $httpMethod = 'GET';
+
+        $controllerInvoker = $router->route($uri, $httpMethod);
+
+        $expected = [
+            'class'  => $rootNamespace.'\\FooBar\\EarthMoonController',
+            'method' => 'getRunFly',
+            'params' => ['a' => 'foo', 'b' => 'bar'],
+            'result' => $rootNamespace.'\\FooBar\\EarthMoonController::getRunFly(foo, bar)',
+        ];
+        $this->assertEquals($expected['class'],  $controllerInvoker->getClass());
+        $this->assertEquals($expected['method'], $controllerInvoker->getMethod());
+        $this->assertEquals($expected['params'], $controllerInvoker->getParams());
+        $this->assertEquals($expected['result'], $controllerInvoker());
+    }
+
     protected function getRouter($rootNamespace)
     {
-        return \Traveler\Bootstrap\bootstrap($rootNamespace)->get('Traveler\\Router');
+        return
+            \Traveler\Bootstrap\bootstrap(
+                \Traveler\Bootstrap\configure($rootNamespace)
+            )->get('Traveler\\Router');
+    }
+
+    protected function getCompositeRouter($rootNamespace)
+    {
+        return
+            \Traveler\Bootstrap\bootstrap(
+                \Traveler\Bootstrap\configureComposite($rootNamespace)
+            )->get('Traveler\\Router');
     }
 }

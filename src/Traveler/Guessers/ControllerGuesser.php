@@ -32,18 +32,26 @@ class ControllerGuesser implements ControllerGuesserInterface
     private $methodGuesser;
 
     /**
+     * @var array
+     */
+    private $extraNamespaces;
+
+    /**
      * @param \Traveler\Guessers\Namespaces\NamespacesGuesserInterface $namespaceGuesser
      * @param \Traveler\Guessers\Classes\ClassesGuesserInterface       $classGuesser
      * @param \Traveler\Guessers\Methods\MethodsGuesserInterface       $methodGuesser
+     * @param array                                                    $extraNamespaces
      */
     public function __construct(
         NamespacesGuesserInterface $namespaceGuesser,
         ClassesGuesserInterface    $classGuesser,
-        MethodsGuesserInterface    $methodGuesser
+        MethodsGuesserInterface    $methodGuesser,
+        array $extraNamespaces = []
     ) {
         $this->namespaceGuesser = $namespaceGuesser;
         $this->classGuesser     = $classGuesser;
         $this->methodGuesser    = $methodGuesser;
+        $this->extraNamespaces  = $extraNamespaces;
     }
 
     /**
@@ -62,7 +70,7 @@ class ControllerGuesser implements ControllerGuesserInterface
         $class     = $this->classGuesser->guess($segments);
         $method    = $this->methodGuesser->guess($segments, $httpMethod);
 
-        $invoker = $this->getInvoker();
+        $invoker = $this->getInvoker($this->extraNamespaces);
 
         $invoker->setClass((strlen($namespace) > 0) ? $namespace.'\\'.$class : $class);
         $invoker->setMethod($method);
@@ -73,10 +81,12 @@ class ControllerGuesser implements ControllerGuesserInterface
     /**
      * Get controller invoker instance
      *
+     * @param array $extraNamespaces Additional namespaces to look across while invoking controller.
+     *
      * @return \Traveler\Invokers\ControllerInvokerInterface
      */
-    protected function getInvoker()
+    protected function getInvoker(array $extraNamespaces = [])
     {
-        return new ControllerInvoker();
+        return new ControllerInvoker($extraNamespaces);
     }
 }

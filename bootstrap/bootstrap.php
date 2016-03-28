@@ -28,7 +28,7 @@ function bootstrap(array $configuration)
  *
  * @return array
  */
-function configure($controllerNamespace)
+function configure($controllerNamespace, $extraNamespaces = [])
 {
     return [
         'Traveler\\Validators\\UriValidatorInterface'                => \DI\object('Traveler\\Validators\\UriValidator'),
@@ -38,7 +38,8 @@ function configure($controllerNamespace)
                                                                             ->constructorParameter('rootNamespace', $controllerNamespace),
         'Traveler\\Guessers\\Classes\\ClassesGuesserInterface'       => \DI\object('Traveler\\Guessers\\Classes\\ClassesGuesser'),
         'Traveler\\Guessers\\Methods\\MethodsGuesserInterface'       => \DI\object('Traveler\\Guessers\\Methods\\MethodsGuesser'),
-        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser'),
+        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser')
+                                                                            ->constructorParameter('extraNamespaces', $extraNamespaces),
 
         'Traveler\\Router' => \DI\object('Traveler\\Router'),
     ];
@@ -51,7 +52,7 @@ function configure($controllerNamespace)
  *
  * @return array
  */
-function configureComposite($controllerNamespace)
+function configureComposite($controllerNamespace, $extraNamespaces = [])
 {
     return [
         'Traveler\\Validators\\UriValidatorInterface'                => \DI\object('Traveler\\Validators\\CompositeUriValidator'),
@@ -61,7 +62,8 @@ function configureComposite($controllerNamespace)
                                                                             ->constructorParameter('rootNamespace', $controllerNamespace),
         'Traveler\\Guessers\\Classes\\ClassesGuesserInterface'       => \DI\object('Traveler\\Guessers\\Classes\\CompositeClassesGuesser'),
         'Traveler\\Guessers\\Methods\\MethodsGuesserInterface'       => \DI\object('Traveler\\Guessers\\Methods\\CompositeMethodsGuesser'),
-        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser'),
+        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser')
+                                                                            ->constructorParameter('extraNamespaces', $extraNamespaces),
 
         'Traveler\\Router' => \DI\object('Traveler\\Router'),
     ];

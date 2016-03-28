@@ -72,19 +72,41 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['result'], $controllerInvoker());
     }
 
-    protected function getRouter($rootNamespace)
+    public function testRoute_WithExtraNamespaces_MapToAppropriateController()
+    {
+        $rootNamespace   = 'Integration\\Assets\\Controllers';
+        $extraNamespaces = [$rootNamespace.'\\SubControllers'];
+        $router          = $this->getRouter($rootNamespace, $extraNamespaces);
+        $uri             = new Uri('http://example.com/foo/action/?a=foo&b=bar');
+        $httpMethod      = 'GET';
+
+        $controllerInvoker = $router->route($uri, $httpMethod);
+
+        $expected = [
+            'class'  => $rootNamespace.'\\SubControllers\\FooController',
+            'method' => 'getAction',
+            'params' => ['a' => 'foo', 'b' => 'bar'],
+            'result' => $rootNamespace.'\\SubControllers\\FooController::getAction(foo, bar)',
+        ];
+        $this->assertEquals($expected['result'], $controllerInvoker());
+        $this->assertEquals($expected['class'],  $controllerInvoker->getClass());
+        $this->assertEquals($expected['method'], $controllerInvoker->getMethod());
+        $this->assertEquals($expected['params'], $controllerInvoker->getParams());
+    }
+
+    protected function getRouter($rootNamespace, $extraNamespaces = [])
     {
         return
             \Traveler\Bootstrap\bootstrap(
-                \Traveler\Bootstrap\configure($rootNamespace)
+                \Traveler\Bootstrap\configure($rootNamespace, $extraNamespaces)
             )->get('Traveler\\Router');
     }
 
-    protected function getCompositeRouter($rootNamespace)
+    protected function getCompositeRouter($rootNamespace, $extraNamespaces = [])
     {
         return
             \Traveler\Bootstrap\bootstrap(
-                \Traveler\Bootstrap\configureComposite($rootNamespace)
+                \Traveler\Bootstrap\configureComposite($rootNamespace, $extraNamespaces)
             )->get('Traveler\\Router');
     }
 }

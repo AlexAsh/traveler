@@ -32,6 +32,21 @@ class ControllerInvoker implements ControllerInvokerInterface
     private $controllerObject = null;
 
     /**
+     * @var array
+     */
+    private $extraNamespaces;
+
+    /**
+     * @param array $extraNamespaces
+     *
+     * @codeCoverageIgnore
+     */
+    public function __construct(array $extraNamespaces = [])
+    {
+        $this->extraNamespaces = $extraNamespaces;
+    }
+
+    /**
      * Invokes controller by class, method, and params given; throws exception if no such controller
      *
      * @return mixed controller invoke result
@@ -40,7 +55,9 @@ class ControllerInvoker implements ControllerInvokerInterface
      */
     public function __invoke()
     {
-        $this->checkController();
+        if (!class_exists($this->class) || !method_exists($this->class, $this->method)) {
+            $this->findController();
+        }
 
         $this->controllerObject = new $this->class();
 
@@ -48,18 +65,27 @@ class ControllerInvoker implements ControllerInvokerInterface
     }
 
     /**
-     * Check if both class and method are reachable
+     * Looks for controller across multiple namespaces
      *
      * @throws \Traveler\Invokers\Exceptions\Exception404
      */
-    private function checkController()
+    private function findController()
     {
-        if (!class_exists($this->class)) {
-            throw new Exception404("No such controller class {$this->class}");
+        $className = end(explode('\\', $this->class));
+        $class     = '';
+
+        foreach ($this->extraNamespaces as $extraNamespace) {
+            if (class_exists($extraNamespace.'\\'.$className) &&
+                    method_exists($extraNamespace.'\\'.$className, $this->method)) {
+                $class       = $extraNamespace.'\\'.$className;
+                $this->class = $class;
+
+                break;
+            }
         }
 
-        if (!method_exists($this->class, $this->method)) {
-            throw new Exception404("No such action {$this->method} in {$this->class}");
+        if ($class === '') {
+            throw new Exception404("No such controller {$this->class}::{$this->method}");
         }
     }
 

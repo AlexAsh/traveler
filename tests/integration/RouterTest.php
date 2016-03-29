@@ -94,6 +94,29 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected['params'], $controllerInvoker->getParams());
     }
 
+    public function testRoute_ThroughPackageHierarchy_MapToAppropriateController()
+    {
+        $rootNamespace    = 'Integration\\Assets\\Packages';
+        $subpackageOffset = 'SubPackages';
+        $controllerOffset = 'Controllers';
+        $router           = $this->getHierarchicalRouter($rootNamespace, $subpackageOffset, $controllerOffset);
+        $uri              = new Uri('http://example.com/package/sub-package/example/action/?a=foo&b=bar');
+        $httpMethod       = 'GET';
+
+        $controllerInvoker = $router->route($uri, $httpMethod);
+
+        $expected = [
+            'class'  => $rootNamespace.'\\Package\\'.$subpackageOffset.'\\SubPackage\\'.$controllerOffset.'\\ExampleController',
+            'method' => 'getAction',
+            'params' => ['a' => 'foo', 'b' => 'bar'],
+            'result' => $rootNamespace.'\\Package\\'.$subpackageOffset.'\\SubPackage\\'.$controllerOffset.'\\ExampleController::getAction(foo, bar)',
+        ];
+        $this->assertEquals($expected['class'],  $controllerInvoker->getClass());
+        $this->assertEquals($expected['method'], $controllerInvoker->getMethod());
+        $this->assertEquals($expected['params'], $controllerInvoker->getParams());
+        $this->assertEquals($expected['result'], $controllerInvoker());
+    }
+
     protected function getRouter($rootNamespace, $extraNamespaces = [])
     {
         return
@@ -107,6 +130,16 @@ class RouterTest extends \PHPUnit_Framework_TestCase
         return
             \Traveler\Bootstrap\bootstrap(
                 \Traveler\Bootstrap\configureComposite($rootNamespace, $extraNamespaces)
+            )->get('Traveler\\Router');
+    }
+
+    protected function getHierarchicalRouter($rootNamespace, $subpackageOffset, $controllerOffset, $extraNamespaces = [])
+    {
+        return
+            \Traveler\Bootstrap\bootstrap(
+                \Traveler\Bootstrap\configureHierarchical(
+                    $rootNamespace, $subpackageOffset, $controllerOffset, $extraNamespaces
+                )
             )->get('Traveler\\Router');
     }
 }

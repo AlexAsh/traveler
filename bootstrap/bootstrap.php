@@ -49,6 +49,7 @@ function configure($controllerNamespace, $extraNamespaces = [])
  * Get composite routing configuration
  *
  * @param string $controllerNamespace
+ * @param array  $extraNamespaces     Additional namespaces to look across for controller.
  *
  * @return array
  */
@@ -60,6 +61,35 @@ function configureComposite($controllerNamespace, $extraNamespaces = [])
 
         'Traveler\\Guessers\\Namespaces\\NamespacesGuesserInterface' => \DI\object('Traveler\\Guessers\\Namespaces\\CompositeNamespacesGuesser')
                                                                             ->constructorParameter('rootNamespace', $controllerNamespace),
+        'Traveler\\Guessers\\Classes\\ClassesGuesserInterface'       => \DI\object('Traveler\\Guessers\\Classes\\CompositeClassesGuesser'),
+        'Traveler\\Guessers\\Methods\\MethodsGuesserInterface'       => \DI\object('Traveler\\Guessers\\Methods\\CompositeMethodsGuesser'),
+        'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser')
+                                                                            ->constructorParameter('extraNamespaces', $extraNamespaces),
+
+        'Traveler\\Router' => \DI\object('Traveler\\Router'),
+    ];
+}
+
+/**
+ * Get hierarchical routing configuration
+ *
+ * @param string $controllerNamespace
+ * @param string $subpackageOffset    Relative namespace offset between package and subpackage.
+ * @param string $controllerOffset    Relative namespace offset between package and controllers
+ * @param array  $extraNamespaces     Additional namespaces to look across for controller.
+ *
+ * @return array
+ */
+function configureHierarchical($controllerNamespace, $subpackageOffset, $controllerOffset, $extraNamespaces = [])
+{
+    return [
+        'Traveler\\Validators\\UriValidatorInterface'                => \DI\object('Traveler\\Validators\\CompositeUriValidator'),
+        'Traveler\\Parsers\\UriParserInterface'                      => \DI\object('Traveler\\Parsers\\UriParser'),
+
+        'Traveler\\Guessers\\Namespaces\\NamespacesGuesserInterface' => \DI\object('Traveler\\Guessers\\Namespaces\\HierarchicalNamespacesGuesser')
+                                                                            ->constructorParameter('rootNamespace',    $controllerNamespace)
+                                                                            ->constructorParameter('subpackageOffset', $subpackageOffset)
+                                                                            ->constructorParameter('controllerOffset', $controllerOffset),
         'Traveler\\Guessers\\Classes\\ClassesGuesserInterface'       => \DI\object('Traveler\\Guessers\\Classes\\CompositeClassesGuesser'),
         'Traveler\\Guessers\\Methods\\MethodsGuesserInterface'       => \DI\object('Traveler\\Guessers\\Methods\\CompositeMethodsGuesser'),
         'Traveler\\Guessers\\ControllerGuesserInterface'             => \DI\object('Traveler\\Guessers\\ControllerGuesser')

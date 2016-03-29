@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="traveler" basedir="." default="qa">
+
+    <target name="qa" depends="syntax-check, test, coding-conventions"></target>
+
+    <target name="syntax-check">
+        <echo message="Validate syntax" />
+        <exec command="find src bootstrap -name '*.php' -print0 | xargs -0 -n1 php -l -d display_errors=on" passthru="true" />
+    </target>
+
+    <target name="test" depends="build">
+        <echo message="Integration tests" />
+        <exec command="vendor/bin/phpunit --testsuite integration" passthru="true" />
+
+        <echo message="Unit tests with coverage" />
+        <exec command="vendor/bin/phpunit --coverage-text --testsuite unit" passthru="true" />
+    </target>
+
+    <target name="build">
+        <echo message="Install/update dependencies" />
+        <exec command="composer update" passthru="true" />
+    </target>
+
+    <target name="coding-conventions">
+        <echo message="Check coding conventions fulfilment: PSR2 and other (see phpcs.xml.dist)" />
+        <exec command="vendor/bin/phpcs" passthru="true" />
+    </target>
+
+</project>

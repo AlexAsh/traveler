@@ -1,0 +1,36 @@
+{
+    "name": "alexash-php/traveler",
+    "description": "Simple routing library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Ash",
+            "email": "streamprop@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "zendframework/zend-diactoros": "^1.3",
+        "php-di/php-di": "^5.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "mockery/mockery": "^0.9.4",
+        "squizlabs/php_codesniffer": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Traveler\\": "src/Traveler/"
+        },
+        "files": [
+            "bootstrap/bootstrap.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Integration\\": "tests/integration/",
+            "Unit\\": "tests/unit/"
+        }
+    }
+}

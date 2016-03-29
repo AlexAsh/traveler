@@ -2,53 +2,56 @@
 
 namespace Traveler\Guessers;
 
-use \Traveler\Invokers\ControllerInvokerInterface;
+use Traveler\Guessers\Namespaces\NamespacesGuesserInterface;
+use Traveler\Guessers\Classes\ClassesGuesserInterface;
+use Traveler\Guessers\Methods\MethodsGuesserInterface;
+use Traveler\Invokers\ControllerInvoker;
 
 /**
- * Guesses controller to call for router
+ * Facade for controller guessing module
+ *
+ * @codeCoverageIgnore
  *
  * @author Alex Ash <streamprop@gmail.com>
  */
 class ControllerGuesser implements ControllerGuesserInterface
 {
     /**
-     * @var string
+     * @var \Traveler\Guessers\Namespaces\NamespacesGuesserInterface
      */
-    private $defaultMethodSegment = 'default';
+    private $namespaceGuesser;
 
     /**
-     * @var string
+     * @var \Traveler\Guessers\Classes\ClassesGuesserInterface
      */
-    private $defaultClassSegment = 'default';
+    private $classGuesser;
+
+    /**
+     * @var \Traveler\Guessers\Methods\MethodsGuesserInterface
+     */
+    private $methodGuesser;
 
     /**
      * @var array
      */
-    private $httpMethods = [
-        'GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE',
-        'LINK', 'UNLINK', 'OPTIONS',
-    ];
+    private $extraNamespaces;
 
     /**
-     * @var string
+     * @param \Traveler\Guessers\Namespaces\NamespacesGuesserInterface $namespaceGuesser
+     * @param \Traveler\Guessers\Classes\ClassesGuesserInterface       $classGuesser
+     * @param \Traveler\Guessers\Methods\MethodsGuesserInterface       $methodGuesser
+     * @param array                                                    $extraNamespaces
      */
-    private $namespace;
-
-    /**
-     * @var \Traveler\Invokers\ControllerInvokerInterface
-     */
-    private $invoker;
-
-    /**
-     * @param string                                        $controllerNamespace
-     * @param \Traveler\Invokers\ControllerInvokerInterface $invoker
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct($controllerNamespace, ControllerInvokerInterface $invoker)
-    {
-        $this->namespace = $controllerNamespace;
-        $this->invoker   = $invoker;
+    public function __construct(
+        NamespacesGuesserInterface $namespaceGuesser,
+        ClassesGuesserInterface    $classGuesser,
+        MethodsGuesserInterface    $methodGuesser,
+        array $extraNamespaces = []
+    ) {
+        $this->namespaceGuesser = $namespaceGuesser;
+        $this->classGuesser     = $classGuesser;
+        $this->methodGuesser    = $methodGuesser;
+        $this->extraNamespaces  = $extraNamespaces;
     }
 
     /**
@@ -63,61 +66,27 @@ class ControllerGuesser implements ControllerGuesserInterface
      */
     public function guess(array $segments, $httpMethod)
     {
-        $this->validateHttpMethod($httpMethod);
+        $namespace = $this->namespaceGuesser->guess($segments);
+        $class     = $this->classGuesser->guess($segments);
+        $method    = $this->methodGuesser->guess($segments, $httpMethod);
 
-        $classSegment  = (count($segments) > 0) ? $segments[0] : $this->defaultClassSegment;
-        $methodSegment = (count($segments) > 1) ? $segments[1] : $this->defaultMethodSegment;
+        $invoker = $this->getInvoker($this->extraNamespaces);
 
-        $this->invoker->setClass($this->namespace.'\\'.ucfirst($classSegment).'Controller');
-        $this->invoker->setMethod(strtolower($httpMethod).ucfirst($methodSegment));
+        $invoker->setClass((strlen($namespace) > 0) ? $namespace.'\\'.$class : $class);
+        $invoker->setMethod($method);
 
-        return $this->invoker;
+        return $invoker;
     }
 
     /**
-     * Ensure that http method is supported
+     * Get controller invoker instance
      *
-     * @param string $httpMethod
+     * @param array $extraNamespaces Additional namespaces to look across while invoking controller.
      *
-     * @throws \DomainException
+     * @return \Traveler\Invokers\ControllerInvokerInterface
      */
-    private function validateHttpMethod($httpMethod)
+    protected function getInvoker(array $extraNamespaces = [])
     {
-        if (!in_array($httpMethod, $this->httpMethods, true)) {
-            throw new \DomainException(
-                "Unsupported http method $httpMethod, supported methods: ".
-                implode(', ', $this->httpMethods)
-            );
-        }
-    }
-
-    /**
-     * @param string $defaultMethodSegment
-     *
-     * @codeCoverageIgnore
-     */
-    public function setDefaultMethodSegment($defaultMethodSegment)
-    {
-        $this->defaultMethodSegment = $defaultMethodSegment;
-    }
-
-    /**
-     * @param string $defaultClassSegment
-     *
-     * @codeCoverageIgnore
-     */
-    public function setDefaultClassSegment($defaultClassSegment)
-    {
-        $this->defaultClassSegment = $defaultClassSegment;
-    }
-
-    /**
-     * @param array $httpMethods
-     *
-     * @codeCoverageIgnore
-     */
-    public function setSupportedHttpMethods(array $httpMethods)
-    {
-        $this->httpMethods = $httpMethods;
+        return new ControllerInvoker($extraNamespaces);
     }
 }

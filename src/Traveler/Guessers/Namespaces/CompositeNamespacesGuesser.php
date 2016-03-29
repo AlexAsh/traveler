@@ -5,18 +5,13 @@ namespace Traveler\Guessers\Namespaces;
 use Traveler\Guessers\CanCamelizeTrait;
 
 /**
- * Guesses full namespace by root namespace and uri path segments
+ * Guesses full namespace by root namespace and multi-word uri path segments
  *
  * @author Alex Ash <streamprop@gmail.com>
  */
-class CompositeNamespacesGuesser implements NamespacesGuesserInterface
+class CompositeNamespacesGuesser extends BaseNamespacesGuesser
 {
     use CanCamelizeTrait;
-
-    /**
-     * @var string
-     */
-    private $root;
 
     /**
      * @var string
@@ -29,12 +24,13 @@ class CompositeNamespacesGuesser implements NamespacesGuesserInterface
      */
     public function __construct($rootNamespace, $delimiter = '-')
     {
-        $this->root      = $rootNamespace;
+        parent::__construct($rootNamespace);
+
         $this->delimiter = $delimiter;
     }
 
     /**
-     * Guesses full namespace by root namespace and uri path segments
+     * Guesses full namespace by root namespace and multi-word uri path segments
      *
      * @param array $uriPathSegments
      *
@@ -42,15 +38,6 @@ class CompositeNamespacesGuesser implements NamespacesGuesserInterface
      */
     public function guess(array $uriPathSegments)
     {
-        if (count($uriPathSegments) < 3) {
-            return $this->root;
-        }
-
-        $root              = (strlen($this->root) > 0) ? $this->root.'\\' : '';
-        $namespaceSegments = array_slice($uriPathSegments, 0, -2);
-        $namespaceChunks   = array_map([$this, 'camelize'], $namespaceSegments);
-        $namespace         = $root.implode('\\', $namespaceChunks);
-
-        return $namespace;
+        return $this->buildNamespace($uriPathSegments, [$this, 'camelize']);
     }
 }

@@ -10,3 +10,4 @@ All notable changes to this project will be documented in this file.
 - Controller invoking functionality
 - Getting router via DI container
 - Guessing controller namespace by URI path
+- Guessing controller namespace with multi-word uri path segments

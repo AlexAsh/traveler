@@ -7,19 +7,14 @@ namespace Traveler\Guessers\Namespaces;
  *
  * @author Alex Ash <streamprop@gmail.com>
  */
-class NamespacesGuesser implements NamespacesGuesserInterface
+class NamespacesGuesser extends BaseNamespacesGuesser
 {
-    /**
-     * @var string
-     */
-    private $root;
-
     /**
      * @param string $rootNamespace
      */
     public function __construct($rootNamespace)
     {
-        $this->root = $rootNamespace;
+        parent::__construct($rootNamespace);
     }
 
     /**
@@ -31,14 +26,6 @@ class NamespacesGuesser implements NamespacesGuesserInterface
      */
     public function guess(array $uriPathSegments)
     {
-        if (count($uriPathSegments) < 3) {
-            return $this->root;
-        }
-
-        $root            = (strlen($this->root) > 0) ? $this->root.'\\' : '';
-        $namespaceChunks = array_map('ucfirst', array_slice($uriPathSegments, 0, -2));
-        $namespace       = $root.implode('\\', $namespaceChunks);
-
-        return $namespace;
+        return $this->buildNamespace($uriPathSegments, 'ucfirst');
     }
 }
